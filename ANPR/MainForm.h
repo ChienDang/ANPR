@@ -1,10 +1,11 @@
-#pragma once
+﻿#pragma once
 #include <opencv\cv.h>
 #include <opencv\highgui.h>
 #include <opencv\ml.h>
 #include <opencv\cxcore.h>
 #include <stdio.h>
 
+#include "PlateFinder.h"
 namespace ANPR {
 
 	using namespace System;
@@ -96,6 +97,7 @@ namespace ANPR {
 			this->btnRecognise->TabIndex = 1;
 			this->btnRecognise->Text = L"Recognise";
 			this->btnRecognise->UseVisualStyleBackColor = true;
+			this->btnRecognise->Click += gcnew System::EventHandler(this, &MainForm::btnRecognise_Click);
 			// 
 			// pbPlate
 			// 
@@ -153,5 +155,24 @@ namespace ANPR {
 				 pbSrc->Image = bmp;
 				 pbPlate->Refresh();
 	}
-	};
+	private: System::Void btnRecognise_Click(System::Object^  sender, System::EventArgs^  e) {
+				 PlateFinder pf;
+
+				 if (!src)
+				 {
+					 MessageBox::Show("No Image Loaded", "Error", MessageBoxButtons::OK);
+					 return;
+				 }
+
+				 IplImage *resizeImg = cvCreateImage(cvSize(800, 600), src->depth, src->nChannels); // resize ảnh
+				 cvResize(src, resizeImg);
+
+				 //Convert sang ảnh xám
+				 IplImage *grayImg = cvCreateImage(cvGetSize(resizeImg), IPL_DEPTH_8U, 1);
+				 cvCvtColor(resizeImg, grayImg, CV_RGB2GRAY);
+				 cvNormalize(grayImg, grayImg, 0, 255, CV_MINMAX);
+
+				 pf.ImageRestoration(grayImg);
+	}
+};
 }
