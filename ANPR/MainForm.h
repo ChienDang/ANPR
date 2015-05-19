@@ -102,6 +102,7 @@ namespace ANPR {
 			this->pbPlate->Location = System::Drawing::Point(12, 307);
 			this->pbPlate->Name = L"pbPlate";
 			this->pbPlate->Size = System::Drawing::Size(134, 50);
+			this->pbPlate->SizeMode = System::Windows::Forms::PictureBoxSizeMode::Zoom;
 			this->pbPlate->TabIndex = 2;
 			this->pbPlate->TabStop = false;
 			// 
@@ -110,6 +111,7 @@ namespace ANPR {
 			this->pbSrc->Location = System::Drawing::Point(12, 12);
 			this->pbSrc->Name = L"pbSrc";
 			this->pbSrc->Size = System::Drawing::Size(383, 273);
+			this->pbSrc->SizeMode = System::Windows::Forms::PictureBoxSizeMode::Zoom;
 			this->pbSrc->TabIndex = 3;
 			this->pbSrc->TabStop = false;
 			// 
