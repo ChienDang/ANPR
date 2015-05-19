@@ -1,4 +1,9 @@
 #pragma once
+#include <opencv\cv.h>
+#include <opencv\highgui.h>
+#include <opencv\ml.h>
+#include <opencv\cxcore.h>
+#include <stdio.h>
 
 namespace ANPR {
 
@@ -8,12 +13,16 @@ namespace ANPR {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace System::Runtime::InteropServices;
 
 	/// <summary>
 	/// Summary for MainForm
 	/// </summary>
 	public ref class MainForm : public System::Windows::Forms::Form
 	{
+
+	private:
+		IplImage *src;
 	public:
 		MainForm(void)
 		{
@@ -33,11 +42,19 @@ namespace ANPR {
 			{
 				delete components;
 			}
+			if (src){
+				src = NULL;
+			}
 		}
-	private: System::Windows::Forms::Button^  button1;
-	private: System::Windows::Forms::Button^  button2;
-	private: System::Windows::Forms::PictureBox^  pictureBox1;
-	private: System::Windows::Forms::PictureBox^  pictureBox2;
+	private: System::Windows::Forms::Button^  btnBrowse;
+	private: System::Windows::Forms::Button^  btnRecognise;
+	private: System::Windows::Forms::PictureBox^  pbPlate;
+	protected:
+
+
+
+	private: System::Windows::Forms::PictureBox^  pbSrc;
+
 	protected:
 
 	private:
@@ -53,67 +70,86 @@ namespace ANPR {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			this->button1 = (gcnew System::Windows::Forms::Button());
-			this->button2 = (gcnew System::Windows::Forms::Button());
-			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
-			this->pictureBox2 = (gcnew System::Windows::Forms::PictureBox());
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->BeginInit();
+			this->btnBrowse = (gcnew System::Windows::Forms::Button());
+			this->btnRecognise = (gcnew System::Windows::Forms::Button());
+			this->pbPlate = (gcnew System::Windows::Forms::PictureBox());
+			this->pbSrc = (gcnew System::Windows::Forms::PictureBox());
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pbPlate))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pbSrc))->BeginInit();
 			this->SuspendLayout();
 			// 
-			// button1
+			// btnBrowse
 			// 
-			this->button1->Location = System::Drawing::Point(196, 320);
-			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(75, 23);
-			this->button1->TabIndex = 0;
-			this->button1->Text = L"Browse...";
-			this->button1->UseVisualStyleBackColor = true;
-			this->button1->Click += gcnew System::EventHandler(this, &MainForm::button1_Click);
+			this->btnBrowse->Location = System::Drawing::Point(196, 320);
+			this->btnBrowse->Name = L"btnBrowse";
+			this->btnBrowse->Size = System::Drawing::Size(75, 23);
+			this->btnBrowse->TabIndex = 0;
+			this->btnBrowse->Text = L"Browse...";
+			this->btnBrowse->UseVisualStyleBackColor = true;
+			this->btnBrowse->Click += gcnew System::EventHandler(this, &MainForm::button1_Click);
 			// 
-			// button2
+			// btnRecognise
 			// 
-			this->button2->Location = System::Drawing::Point(320, 320);
-			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(75, 23);
-			this->button2->TabIndex = 1;
-			this->button2->Text = L"Recognise";
-			this->button2->UseVisualStyleBackColor = true;
+			this->btnRecognise->Location = System::Drawing::Point(320, 320);
+			this->btnRecognise->Name = L"btnRecognise";
+			this->btnRecognise->Size = System::Drawing::Size(75, 23);
+			this->btnRecognise->TabIndex = 1;
+			this->btnRecognise->Text = L"Recognise";
+			this->btnRecognise->UseVisualStyleBackColor = true;
 			// 
-			// pictureBox1
+			// pbPlate
 			// 
-			this->pictureBox1->Location = System::Drawing::Point(12, 307);
-			this->pictureBox1->Name = L"pictureBox1";
-			this->pictureBox1->Size = System::Drawing::Size(134, 50);
-			this->pictureBox1->TabIndex = 2;
-			this->pictureBox1->TabStop = false;
+			this->pbPlate->Location = System::Drawing::Point(12, 307);
+			this->pbPlate->Name = L"pbPlate";
+			this->pbPlate->Size = System::Drawing::Size(134, 50);
+			this->pbPlate->TabIndex = 2;
+			this->pbPlate->TabStop = false;
 			// 
-			// pictureBox2
+			// pbSrc
 			// 
-			this->pictureBox2->Location = System::Drawing::Point(12, 12);
-			this->pictureBox2->Name = L"pictureBox2";
-			this->pictureBox2->Size = System::Drawing::Size(383, 273);
-			this->pictureBox2->TabIndex = 3;
-			this->pictureBox2->TabStop = false;
+			this->pbSrc->Location = System::Drawing::Point(12, 12);
+			this->pbSrc->Name = L"pbSrc";
+			this->pbSrc->Size = System::Drawing::Size(383, 273);
+			this->pbSrc->TabIndex = 3;
+			this->pbSrc->TabStop = false;
 			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(431, 380);
-			this->Controls->Add(this->pictureBox2);
-			this->Controls->Add(this->pictureBox1);
-			this->Controls->Add(this->button2);
-			this->Controls->Add(this->button1);
+			this->Controls->Add(this->pbSrc);
+			this->Controls->Add(this->pbPlate);
+			this->Controls->Add(this->btnRecognise);
+			this->Controls->Add(this->btnBrowse);
 			this->Name = L"MainForm";
 			this->Text = L"ANPR";
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pbPlate))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pbSrc))->EndInit();
 			this->ResumeLayout(false);
 
 		}
 #pragma endregion
+
+		private: char* ConvertStringToChar(System::String ^str)
+		{
+					 char* str2 = (char*)(void*)Marshal::StringToHGlobalAnsi(str);
+					 return str2;
+		}
 	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+				 OpenFileDialog^ dlg = gcnew OpenFileDialog;
+				 dlg->Filter = "Image (*.bmp; *.jpg; *.png; *.jpeg) | *.bmp; *.jpg; *.png; *.jpeg| All files (*.*|*.*||";
+
+				 if (dlg->ShowDialog() == System::Windows::Forms::DialogResult::Cancel)
+				 {
+					 return;
+				 }
+
+				 src = cvLoadImage(ConvertStringToChar(dlg->FileName));
+
+				 Bitmap ^bmp = gcnew Bitmap(dlg->FileName);
+				 pbSrc->Image = bmp;
+				 pbPlate->Refresh();
 	}
 	};
 }
