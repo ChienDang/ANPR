@@ -41,9 +41,79 @@ void PlateFinder::ImageRestoration(IplImage *src)
 	cvZero(dst);
 	cvCopy(thresholded, mini_thresh);
 
+	//Sử dụng hình chữ nhật 8x16 trượt trên toàn bộ ảnh để khử đi các nhiễu ko cần thiết
+
+	int cnt;
+	int nonZero1, nonZero2, nonZero3, nonZero4;
+	CvRect rect;
+
+	for (int i = 0; i < mini_thresh->width - 32; i+=4)
+	{
+		for (int j = 0; j < mini_thresh->height - 16; j+=4)
+		{
+			rect = cvRect(i, j, 16, 8);
+			cvSetImageROI(mini_thresh, rect);
+			nonZero1 = cvCountNonZero(mini_thresh);
+			cvResetImageROI(mini_thresh);
+
+			rect = cvRect(i+16, j, 16, 8);
+			cvSetImageROI(mini_thresh, rect);
+			nonZero2 = cvCountNonZero(mini_thresh);
+			cvResetImageROI(mini_thresh);
+
+			rect = cvRect(i, j+8, 16, 8);
+			cvSetImageROI(mini_thresh, rect);
+			nonZero3 = cvCountNonZero(mini_thresh);
+			cvResetImageROI(mini_thresh);
+
+			rect = cvRect(i+16, j+8, 16, 8);
+			cvSetImageROI(mini_thresh, rect);
+			nonZero4 = cvCountNonZero(mini_thresh);
+			cvResetImageROI(mini_thresh);
+
+			cnt = 0;
+			if (nonZero1 > 15) { cnt++; }
+			if (nonZero2 > 15) { cnt++; }
+			if (nonZero3 > 15) { cnt++; }
+			if (nonZero4 > 15) { cnt++; }
+
+		
+			if (cnt > 2)
+			{
+				rect = cvRect(i, j, 32, 16);
+				cvSetImageROI(dst, rect);
+				cvSetImageROI(mini_thresh, rect);
+				cvCopy(mini_thresh, dst);
+				cvResetImageROI(dst);
+				cvResetImageROI(mini_thresh);
+
+			}
+		}
+	}
+	IplImage* dst_clone = cvCloneImage(dst);
+
+	cvDilate(dst, dst, NULL, 2);
+	cvErode(dst, dst, NULL, 2);
+	cvDilate(dst, dst, S1, 9);
+	cvErode(dst, dst, S1, 10);
+	cvDilate(dst, dst);
+
 	cvShowImage("Source", src);
 	cvShowImage("mImg", mImg);
 	cvShowImage("mini_thresh", mini_thresh);
+	cvShowImage("dst", dst);
+	cvShowImage("dst_clone", dst_clone);
+
+	cvPyrUp(dst, src);
+
+	cvReleaseImage(&src);
+	cvReleaseImage(&tmp);
+	cvReleaseImage(&mini_thresh);
+	cvReleaseImage(&mImg);
+	cvReleaseImage(&dst);
+	cvReleaseImage(&dst_clone);
+	cvReleaseImage(&thresholded);
+	cvReleaseImage(&src_pyrdown);
 
 
 }
