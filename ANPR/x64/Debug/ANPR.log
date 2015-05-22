@@ -1,3 +1,7 @@
-﻿  PlateFinder.cpp
+﻿  MainForm.cpp
+  PlateFinder.cpp
+  Generating Code...
+c:\users\dang chien\documents\visual studio 2013\projects\anpr\anpr\platefinder.cpp(143): warning C4700: uninitialized local variable 'plate' used
+  .NETFramework,Version=v4.5.AssemblyAttributes.cpp
 opencv_ts2410.lib(opencv_ts_pch.obj) : warning LNK4099: PDB 'opencv_ts2410.pdb' was not found with 'opencv_ts2410.lib(opencv_ts_pch.obj)' or at 'C:\Users\Dang Chien\documents\visual studio 2013\Projects\ANPR\x64\Debug\opencv_ts2410.pdb'; linking object as if no debug info
   ANPR.vcxproj -> C:\Users\Dang Chien\documents\visual studio 2013\Projects\ANPR\x64\Debug\ANPR.exe

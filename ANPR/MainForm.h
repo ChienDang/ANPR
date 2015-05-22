@@ -168,11 +168,12 @@ namespace ANPR {
 				 cvResize(src, resizeImg);
 
 				 //Convert sang ảnh xám
-				 IplImage *grayImg = cvCreateImage(cvGetSize(resizeImg), IPL_DEPTH_8U, 1);
+				 /*IplImage *grayImg = cvCreateImage(cvGetSize(resizeImg), IPL_DEPTH_8U, 1);
 				 cvCvtColor(resizeImg, grayImg, CV_RGB2GRAY);
 				 cvNormalize(grayImg, grayImg, 0, 255, CV_MINMAX);
 
-				 pf.ImageRestoration(grayImg);
+				 pf.ImageRestoration(grayImg);*/
+				 pf.FindPlate(resizeImg);
 	}
 };
 }

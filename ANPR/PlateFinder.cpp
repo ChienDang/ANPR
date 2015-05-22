@@ -98,11 +98,11 @@ void PlateFinder::ImageRestoration(IplImage *src)
 	cvErode(dst, dst, S1, 10);
 	cvDilate(dst, dst);
 
-	cvShowImage("Source", src);
+	/*cvShowImage("Source", src);
 	cvShowImage("mImg", mImg);
 	cvShowImage("mini_thresh", mini_thresh);
 	cvShowImage("dst", dst);
-	cvShowImage("dst_clone", dst_clone);
+	cvShowImage("dst_clone", dst_clone);*/
 
 	cvPyrUp(dst, src);
 
@@ -116,4 +116,29 @@ void PlateFinder::ImageRestoration(IplImage *src)
 	cvReleaseImage(&src_pyrdown);
 
 
+}
+
+IplImage* PlateFinder::FindPlate(IplImage* src)
+{
+	IplImage* plate;
+	IplImage* contourImg = cvCreateImage(cvGetSize(src), IPL_DEPTH_8U, 1); //anh tim contour
+	IplImage* grayImg = cvCreateImage(cvGetSize(src), IPL_DEPTH_8U, 1); // anh xam
+	cvCvtColor(src, grayImg, CV_RGB2GRAY);
+
+	IplImage* cloneImg = cvCreateImage(cvGetSize(src), IPL_DEPTH_8U, 3);
+	cloneImg = cvCloneImage(src);
+
+	//Tien xu ly anh
+	cvCopy(grayImg, contourImg);
+	cvNormalize(contourImg, contourImg, 0, 255, CV_MINMAX);
+	ImageRestoration(contourImg);
+
+	//Tim contour
+	CvMemStorage* storagePlate = cvCreateMemStorage(0);
+	CvSeq* contours = cvCreateSeq(CV_SEQ_ELTYPE_POINT, sizeof(CvSeq), sizeof(CvPoint), storagePlate);
+	cvFindContours(contourImg, storagePlate, &contours, sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cvPoint(0, 0));
+
+	cvShowImage("contourImg", contourImg);
+
+	return plate;
 }

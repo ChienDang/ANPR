@@ -14,5 +14,6 @@ public:
 	PlateFinder();
 	virtual ~PlateFinder();
 	void ImageRestoration(IplImage *src); // Hàm tiền xử lý ảnh gốc
+	IplImage* FindPlate(IplImage* src); //Hàm tìm và tách biển số
 };
 
