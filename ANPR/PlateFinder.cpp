@@ -134,8 +134,8 @@ IplImage* PlateFinder::FindPlate(IplImage* src)
 	ImageRestoration(contourImg);
 
 	//Tim contour
-	CvMemStorage* storagePlate = cvCreateMemStorage(0);
-	CvSeq* contours = cvCreateSeq(CV_SEQ_ELTYPE_POINT, sizeof(CvSeq), sizeof(CvPoint), storagePlate);
+	CvMemStorage *storagePlate = cvCreateMemStorage(0);
+	CvSeq *contours = cvCreateSeq(CV_SEQ_ELTYPE_POINT, sizeof(CvSeq), sizeof(CvPoint), storagePlate);
 	cvFindContours(contourImg, storagePlate, &contours, sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cvPoint(0, 0));
 
 	cvShowImage("contourImg", contourImg);
